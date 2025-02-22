@@ -76,8 +76,8 @@ const AddSubCategory = () => {
                 {/* Submit Button */}
                 <button 
                   type="submit" 
-                  className="btn btn-success px-4 py-2"
-                  style={{ backgroundColor: '#00E676' }}
+                  className="btn px-4 py-2"
+                  style={{ backgroundColor: '#19D895', color:'white' }}
                 >
                   Submit
                 </button>

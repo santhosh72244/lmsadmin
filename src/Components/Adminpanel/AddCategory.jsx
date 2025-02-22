@@ -40,8 +40,8 @@ const AddMainCategory = () => {
                   </label>
                   <input
                     type="text"
-                    className="form-control"
-                    id="categoryName"
+                    className="form-control w-50"
+                    id="categoryName" 
                     name="categoryName"
                     value={formData.categoryName}
                     onChange={handleInputChange}
@@ -49,7 +49,7 @@ const AddMainCategory = () => {
                 </div>
 
                 {/* Image Upload */}
-                <div className="mb-3">
+                {/* <div className="mb-3">
                   <label htmlFor="image" className="form-label">
                     Image upload(jpg, png, jpeg)
                   </label>
@@ -61,10 +61,10 @@ const AddMainCategory = () => {
                     accept=".jpg,.png,.jpeg"
                     onChange={handleInputChange}
                   />
-                </div>
+                </div> */}
 
                 {/* Set Popular Checkbox */}
-                <div className="mb-3">
+                {/* <div className="mb-3">
                   <div className="form-check">
                     <input
                       type="checkbox"
@@ -78,10 +78,10 @@ const AddMainCategory = () => {
                       Set Popular
                     </label>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Set Home Page Top Checkbox */}
-                <div className="mb-3">
+                {/* <div className="mb-3">
                   <div className="form-check">
                     <input
                       type="checkbox"
@@ -95,10 +95,14 @@ const AddMainCategory = () => {
                       Set Home Page Top
                     </label>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Submit Button */}
-                <button type="submit" className="btn btn-success">
+                <button 
+                  type="submit" 
+                  className="btn px-4 py-2"
+                  style={{ backgroundColor: '#19D895', color:'white' }}
+                >
                   Submit
                 </button>
               </form>

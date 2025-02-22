@@ -50,12 +50,12 @@ const MainCategories = () => {
                     <td className='text-center'>{category.priorityId}</td>
                     <td className='text-center'>
                       <button className="btn btn-primary" onClick={() => navigate(`/edit-main-category`)}>
-                        <i className="bi bi-pencil"></i>
+                        <i className="bi-pencil"></i>
                       </button>
                     </td>
                     <td className='text-center'>
                       <button className="btn btn-primary">
-                        <i className="bi bi-trash"></i>
+                        <i className="bi-trash"></i>
                       </button>
                     </td>
                   </tr>
