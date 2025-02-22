@@ -87,7 +87,7 @@ const AddTemplate = () => {
                                     <div className="d-flex align-items-center gap-2">
                                         <div className="flex-grow-1">
                                             <label htmlFor={`fileUpload${input.id}`} className="form-label">
-                                                Choose File {input.id + 1}
+                                                Choose File
                                             </label>
                                             <input
                                                 type="file"

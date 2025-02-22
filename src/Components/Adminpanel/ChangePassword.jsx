@@ -53,20 +53,6 @@ const ChangePassword = () => {
         <div className="col-md-6">
           <h5>Change Password</h5>
           <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label">Old Password</label>
-              <input
-                type="password"
-                className={`form-control ${errors.oldPassword ? 'is-invalid' : ''}`}
-                name="oldPassword"
-                value={passwordData.oldPassword}
-                onChange={handleChange}
-                placeholder="Old Password"
-              />
-              {errors.oldPassword && (
-                <div className="invalid-feedback">{errors.oldPassword}</div>
-              )}
-            </div>
 
             <div className="mb-3">
               <label className="form-label">New Password</label>

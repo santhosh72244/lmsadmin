@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import './Sidebar.css'
 
 const AdminSidebar = ({ isCollapsed }) => {
   // Single state to track which menu is open
@@ -13,110 +14,7 @@ const AdminSidebar = ({ isCollapsed }) => {
   };
 
   return (
-    <div className={`sidebar bg-primary text-white ${isCollapsed ? '' : 'collapsed'}`}>
-      <style>
-        {`
-          .sidebar {
-            min-height: 100vh;
-            background-color: #0d6efd !important;
-          }
-          
-          .nav-link {
-            position: relative;
-            transition: all 0.3s ease !important;
-          }
-          
-          .nav-link, button.nav-link {
-            margin: 2px 0;
-            padding: 10px 15px !important;
-            color: rgba(255, 255, 255, 0.9) !important;
-          }
-          
-          .nav-link:hover, button.nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            transform: translateX(10px);
-            color: white !important;
-          }
-          
-          .nav-link i, button.nav-link i {
-            margin-right: 15px;
-            width: 20px;
-            text-align: center;
-          }
-
-          .menu-text {
-            flex: 1;
-            margin-right: 8px;
-          }
-          
-          .arrow-icon {
-            transition: transform 0.3s ease;
-            position: absolute;
-            right: -2px;
-          }
-          
-          .nav-link:hover .arrow-icon {
-            transform: translateX(5px);
-          }
-          
-          .nav-item button {
-            width: 100%;
-            text-align: left;
-            border: none;
-            background: transparent;
-          }
-          
-          .nav-item button span {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            position: relative;
-          }
-          
-          .nav flex-column.pl-4 {
-            position: relative;
-          }
-          
-          .nav-link.sub-menu-link {
-            position: relative;
-            padding-left: 48px !important;
-          }
-          
-          .nav-link.sub-menu-link::before {
-            content: '';
-            position: absolute;
-            left: 25px;
-            top: 50%;
-            width: 12px;
-            height: 1.5px;
-            background-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-50%);
-            transition: background-color 0.3s ease;
-          }
-          
-          .nav-link.sub-menu-link:hover::before {
-            background-color: white;
-          }
-          
-          .bi {
-            font-size: 1.1rem;
-          }
-          
-          button .bi {
-            margin-right: 15px;
-          }
-          
-          .nav-item div {
-            width: 100%;
-          }
-          
-          .nav-link:hover, 
-          button.nav-link:hover,
-          .nav-link.sub-menu-link:hover {
-            transform: translateX(10px);
-          }
-        `}
-      </style>
+    <div className={`sidebar text-white ${isCollapsed ? '' : 'collapsed'}`}>
       <div className="sidebar-content h-100 d-flex flex-column">
         <div className="p-3">
           <ul className="nav flex-column">
@@ -204,7 +102,7 @@ const AdminSidebar = ({ isCollapsed }) => {
             <li className="nav-item">
               <div>
                 <button
-                  onClick={() => handleMenuClick('orders')}
+                  onClick={() => handleMenuClick('subscriptions')}
                   className="nav-link"
                 >
                   <div className="d-flex align-items-center w-100">
@@ -221,7 +119,7 @@ const AdminSidebar = ({ isCollapsed }) => {
                     )}
                   </div>
                 </button>
-                {openMenu === 'orders' && !isCollapsed && (
+                {openMenu === 'subscriptions' && !isCollapsed && (
                   <ul className="nav flex-column">
                     <li className="nav-item">
                       <Link to="/subscription" className="nav-link sub-menu-link">
@@ -469,18 +367,8 @@ const AdminSidebar = ({ isCollapsed }) => {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/banner-management" className="nav-link sub-menu-link">
-                        Banner Management
-                      </Link>
-                    </li>
-                    <li className="nav-item">
                       <Link to="/logo-management" className="nav-link sub-menu-link">
                         Logo Management
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link to="/stripe-settings" className="nav-link sub-menu-link">
-                        Stripe Settings
                       </Link>
                     </li>
                   </ul>

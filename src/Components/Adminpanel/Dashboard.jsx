@@ -34,7 +34,7 @@ const Dashboard = () => {
               </div>
               <div className="text-center flex-grow-1">
                 <h2 className="mb-0">19</h2>
-                <p className="mb-0 text-primary">Approved Users</p>
+                <p className="mb-0 text-primary">Subscriptions</p>
               </div>
               <div className="text-center flex-grow-1">
                 <h2 className="mb-0">16</h2>
@@ -42,7 +42,7 @@ const Dashboard = () => {
               </div>
               <div className="text-center flex-grow-1">
                 <h2 className="mb-0">11</h2>
-                <p className="mb-0 text-primary">Approved Courses</p>
+                <p className="mb-0 text-primary">Templates</p>
               </div>
             </div>
           </div>
@@ -76,7 +76,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="col-md-4">
-          <div className="card shadow-sm bg-primary text-white h-100">
+          <div className="card shadow-sm text-white h-100 usercard">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center">
                 <div>
@@ -119,7 +119,7 @@ const Dashboard = () => {
               <h5 className="card-title mb-3">Push Notification</h5>
               <p className="text-muted">Send Push Notification to all users</p>
               <textarea className="form-control mb-3" rows="6"></textarea>
-              <button className="btn btn-success w-100">Submit</button>
+              <button className="btn userbtn">Submit</button>
             </div>
           </div>
         </div>

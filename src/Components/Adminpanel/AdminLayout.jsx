@@ -16,9 +16,6 @@ import SubCategories from './SubCategories';
 import AddSubCategory from './AddSubCategory';
 import EditSubCategory from './EditSubCategory';
 import CourseNewOrders from './CourseNewOrders';
-import BannerManagement from './BannerManagement';
-import AddBanner from './AddBanner';
-import EditBanner from './EditBanner';
 import LogoManagement from './LogoManagement';
 import DefaultSettings from './DefaultSettings';
 import PaymentSettings from './PaymentSettings';
@@ -75,12 +72,6 @@ const AdminLayout = () => {
           <Route path="/edit-sub-category" element={<EditSubCategory />} />
 
           <Route path="/new-order" element={<CourseNewOrders />} />
-          
-          <Route path="/banner-management" element={<BannerManagement />} />
-
-          <Route path="/add-banner" element={<AddBanner />} />
-
-          <Route path="/edit-banner" element={<EditBanner />} />
           
           <Route path="/logo-management" element={<LogoManagement />} />
 
