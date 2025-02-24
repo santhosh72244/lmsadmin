@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const AddCourses = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ const AddCourses = () => {
   });
 
   const [lessons, setLessons] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const emptyVideoLesson = {
     type: 'video',
@@ -40,9 +43,83 @@ const AddCourses = () => {
     }]
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ ...formData, lessons });
+    setLoading(true);
+    setError(null);
+
+    try {
+      const courseFormData = new FormData();
+
+      // Add basic form fields
+      Object.keys(formData).forEach(key => {
+        if (key !== 'courseImage' && key !== 'courseVideo') {
+          courseFormData.append(key, formData[key]);
+        }
+      });
+
+      // Add file uploads if they exist
+      if (formData.courseImage) {
+        courseFormData.append('courseImage', formData.courseImage);
+      }
+      if (formData.courseVideo) {
+        courseFormData.append('courseVideo', formData.courseVideo);
+      }
+
+      // Process lessons
+      const processedLessons = lessons.map((lesson, index) => {
+        if (lesson.type === 'video') {
+          // Create a copy of the lesson without file objects
+          const { image, video, ...lessonData } = lesson;
+          
+          // Add files to FormData with unique keys
+          if (image) {
+            courseFormData.append(`lessons[${index}].image`, image);
+          }
+          if (video) {
+            courseFormData.append(`lessons[${index}].video`, video);
+          }
+          
+          return lessonData;
+        }
+        return lesson;
+      });
+
+      // Add processed lessons as JSON string
+      courseFormData.append('lessons', JSON.stringify(processedLessons));
+
+      const response = await axios.post('/api/courses', courseFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Course created successfully:', response.data);
+      
+      // Reset form
+      setFormData({
+        courseImage: null,
+        courseVideo: null,
+        courseTitle: '',
+        parentCategory: '',
+        subCategory: '',
+        courseDescription: '',
+        coursePrice: '',
+        timeSpend: '',
+        requirements: '',
+        courseDuration: '',
+        targetAudience: '',
+        level: ''
+      });
+      setLessons([]);
+      alert('Course created successfully!');
+
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred while creating the course');
+      console.error('Error creating course:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -98,7 +175,6 @@ const AddCourses = () => {
     ]);
   };
 
-  // New function to remove a lesson
   const handleRemoveLesson = (indexToRemove) => {
     setLessons(prevLessons => 
       prevLessons.filter((_, index) => index !== indexToRemove)
@@ -117,7 +193,6 @@ const AddCourses = () => {
     });
   };
 
-  // New function to remove a question
   const handleRemoveQuestion = (lessonIndex, questionIndex) => {
     setLessons(prevLessons => {
       const updatedLessons = [...prevLessons];
@@ -139,13 +214,11 @@ const AddCourses = () => {
     });
   };
 
+
   return (
     <div className="container p-4">
       <form onSubmit={handleSubmit}>
         <h2>Add Course</h2>
-        
-        {/* ... (previous form fields remain the same until Lessons section) ... */}
-        
         <div className="mb-3">
           <label className="form-label">Course Title</label>
           <input 
