@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Auth.css';
+import axios from 'axios'; // Make sure to install axios: npm install axios
+import baseurl from '../ApiService/ApiService';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,11 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,6 +31,18 @@ const Register = () => {
         [e.target.name]: ''
       });
     }
+    // Clear API error when user modifies the form
+    if (apiError) {
+      setApiError('');
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const validateForm = () => {
@@ -55,12 +74,64 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Handle registration logic here
-      console.log('Registration submitted:', formData);
+      try {
+        setIsLoading(true);
+        setApiError('');
+        
+        // Remove confirmPassword from the data sent to API
+        const { confirmPassword, ...apiData } = formData;
+        
+        // Make API call to register endpoint
+        const response = await axios.post(`${baseurl}/api/admin/register`, apiData);
+        
+        console.log('Registration successful:', response.data);
+        setSuccess(response.data.msg || 'Registration Successful!');
+        
+        // Clear the form
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
+        
+        // Optionally redirect to login page after success
+        setTimeout(() => {
+          window.location.href = '/admin/login';
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Registration error:', error);
+        
+        // Handle API errors
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          if (error.response.data.errors && Array.isArray(error.response.data.errors)) {
+            // Handle validation errors returned by express-validator
+            const serverErrors = {};
+            error.response.data.errors.forEach(err => {
+              serverErrors[err.param] = err.msg;
+            });
+            setErrors(serverErrors);
+          } else {
+            // Handle general error message
+            setApiError(error.response.data.msg || 'Registration failed. Please try again.');
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          setApiError('No response from server. Please check your connection.');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          setApiError('An error occurred. Please try again later.');
+        }
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -77,6 +148,18 @@ const Register = () => {
                   Login
                 </a>
               </p>
+
+              {apiError && (
+                <div className="alert alert-danger" role="alert">
+                  {apiError}
+                </div>
+              )}
+
+              {success && (
+                <div className="alert alert-success" role="alert">
+                  {success}
+                </div>
+              )}
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
@@ -109,9 +192,9 @@ const Register = () => {
                   )}
                 </div>
 
-                <div className="mb-3">
+                <div className="mb-3 position-relative">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     className={`form-control form-control-lg ${errors.password ? 'is-invalid' : ''}`}
                     placeholder="Password"
                     name="password"
@@ -119,14 +202,22 @@ const Register = () => {
                     onChange={handleChange}
                     required
                   />
+                  <button 
+                    type="button" 
+                    className="btn btn-link position-absolute end-0 top-50 translate-middle-y text-decoration-none"
+                    onClick={togglePasswordVisibility}
+                    style={{ zIndex: 5 }}
+                  >
+                    <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+                  </button>
                   {errors.password && (
                     <div className="invalid-feedback">{errors.password}</div>
                   )}
                 </div>
 
-                <div className="mb-4">
+                <div className="mb-4 position-relative">
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     className={`form-control form-control-lg ${errors.confirmPassword ? 'is-invalid' : ''}`}
                     placeholder="Confirm Password"
                     name="confirmPassword"
@@ -134,6 +225,14 @@ const Register = () => {
                     onChange={handleChange}
                     required
                   />
+                  <button 
+                    type="button" 
+                    className="btn btn-link position-absolute end-0 top-50 translate-middle-y text-decoration-none"
+                    onClick={toggleConfirmPasswordVisibility}
+                    style={{ zIndex: 5 }}
+                  >
+                    <i className={`bi ${showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+                  </button>
                   {errors.confirmPassword && (
                     <div className="invalid-feedback">{errors.confirmPassword}</div>
                   )}
@@ -142,8 +241,9 @@ const Register = () => {
                 <button
                   type="submit"
                   className="btn btn-primary w-100 btn-lg mb-4"
+                  disabled={isLoading}
                 >
-                  Register
+                  {isLoading ? 'Registering...' : 'Register'}
                 </button>
               </form>
             </div>

@@ -36,7 +36,7 @@ const ManageApprovedUsers = () => {
     <div className="container-fluid p-4">
       <div>
         <div>
-          <h4 className="card-title mb-4">Manage Approved Users</h4>
+          <h4 className="card-title mb-4">Manage Users</h4>
           <div className="mb-4 d-flex justify-content-end">
         <input
           type="text"

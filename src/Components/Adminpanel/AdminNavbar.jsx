@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AdminNavbar = ({ setIsCollapsed, isCollapsed }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
   const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,6 +22,24 @@ const AdminNavbar = ({ setIsCollapsed, isCollapsed }) => {
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
+  };
+
+  // Handle logout functionality
+  const handleLogout = (e) => {
+    e.preventDefault();
+    
+    // Clear all items from localStorage
+    localStorage.clear();
+    
+    // Alternatively, if you want to clear only specific items:
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('user');
+    
+    // Close the dropdown
+    setShowDropdown(false);
+    
+    // Redirect to the login page
+    navigate('/admin/login');
   };
 
   // Close dropdown when clicking outside
@@ -81,12 +100,13 @@ const AdminNavbar = ({ setIsCollapsed, isCollapsed }) => {
                   >
                     Change Password
                   </Link>
-                  <Link 
-                    to="/logout" 
+                  <a 
+                    href="#" 
+                    onClick={handleLogout}
                     className="dropdown-item px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Sign Out
-                  </Link>
+                  </a>
                 </div>
               )}
             </div>

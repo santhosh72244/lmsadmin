@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import baseurl from '../ApiService/ApiService';
+import { useNavigate } from 'react-router-dom';
 
-const AddMainCategory = () => {
+const AddCategory = () => {
   const [formData, setFormData] = useState({
-    categoryName: '',
+    category_name: '', // Changed to match backend field name
     image: null,
     setPopular: false,
     setHomePageTop: false
   });
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const navigate = useNavigate()
 
   const handleInputChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -18,10 +26,44 @@ const AddMainCategory = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission logic here
+    
+    // Reset status states
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+    
+    try {
+      // Create form data to send to API
+      const apiData = {
+        category_name: formData.category_name
+      };
+      
+      // Make the API call
+      const response = await axios.post(`${baseurl}/api/category/add`, apiData);
+      
+      console.log('Category added successfully:', response.data);
+      setSuccess('Category added successfully!');
+      
+      // Reset form
+      setFormData({
+        category_name: '',
+        image: null,
+        setPopular: false,
+        setHomePageTop: false
+      });
+
+      setTimeout(() => {
+        navigate('/parent-categories');
+      }, 1000);
+      
+    } catch (err) {
+      console.error('Error adding category:', err);
+      setError(err.response?.data?.message || 'Failed to add category. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,78 +74,45 @@ const AddMainCategory = () => {
             <div className="card-body">
               <h5 className="card-title mb-4">Add Main Category</h5>
               
+              {/* Show success message */}
+              {success && (
+                <div className="alert alert-success" role="alert">
+                  {success}
+                </div>
+              )}
+              
+              {/* Show error message */}
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {error}
+                </div>
+              )}
+              
               <form onSubmit={handleSubmit}>
                 {/* Category Name */}
                 <div className="mb-3">
-                  <label htmlFor="categoryName" className="form-label">
+                  <label htmlFor="category_name" className="form-label">
                     Category Name
                   </label>
                   <input
                     type="text"
                     className="form-control w-50"
-                    id="categoryName" 
-                    name="categoryName"
-                    value={formData.categoryName}
+                    id="category_name" 
+                    name="category_name"
+                    value={formData.category_name}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
-
-                {/* Image Upload */}
-                {/* <div className="mb-3">
-                  <label htmlFor="image" className="form-label">
-                    Image upload(jpg, png, jpeg)
-                  </label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    id="image"
-                    name="image"
-                    accept=".jpg,.png,.jpeg"
-                    onChange={handleInputChange}
-                  />
-                </div> */}
-
-                {/* Set Popular Checkbox */}
-                {/* <div className="mb-3">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="setPopular"
-                      name="setPopular"
-                      checked={formData.setPopular}
-                      onChange={handleInputChange}
-                    />
-                    <label className="form-check-label" htmlFor="setPopular">
-                      Set Popular
-                    </label>
-                  </div>
-                </div> */}
-
-                {/* Set Home Page Top Checkbox */}
-                {/* <div className="mb-3">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="setHomePageTop"
-                      name="setHomePageTop"
-                      checked={formData.setHomePageTop}
-                      onChange={handleInputChange}
-                    />
-                    <label className="form-check-label" htmlFor="setHomePageTop">
-                      Set Home Page Top
-                    </label>
-                  </div>
-                </div> */}
 
                 {/* Submit Button */}
                 <button 
                   type="submit" 
                   className="btn px-4 py-2"
                   style={{ backgroundColor: '#19D895', color:'white' }}
+                  disabled={loading}
                 >
-                  Submit
+                  {loading ? 'Submitting...' : 'Submit'}
                 </button>
               </form>
             </div>
@@ -114,4 +123,4 @@ const AddMainCategory = () => {
   );
 };
 
-export default AddMainCategory;
+export default AddCategory;

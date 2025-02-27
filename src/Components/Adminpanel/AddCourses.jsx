@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import baseurl from '../ApiService/ApiService';
 const AddCourses = () => {
   const [formData, setFormData] = useState({
     courseImage: null,
@@ -88,7 +88,7 @@ const AddCourses = () => {
       // Add processed lessons as JSON string
       courseFormData.append('lessons', JSON.stringify(processedLessons));
 
-      const response = await axios.post('/api/courses', courseFormData, {
+      const response = await axios.post(`${baseurl}/api/course/add`, courseFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

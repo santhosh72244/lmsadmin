@@ -59,17 +59,17 @@ const AdminLayout = () => {
 
           <Route path="/approved-courses" element={<ViewCourses />} />
 
-          <Route path="/main-category" element={<MainCategories />} />
+          <Route path="/parent-categories" element={<MainCategories />} />
           
           <Route path="/add-category" element={<AddCategory />} />
 
-          <Route path="/edit-main-category" element={<EditMainCategory />} />
+          <Route path="/edit-main-category/:id" element={<EditMainCategory />} />
 
-          <Route path="/sub-category" element={<SubCategories />} />
+          <Route path="/sub-categories" element={<SubCategories />} />
 
           <Route path="/add-sub-category" element={<AddSubCategory />} />
 
-          <Route path="/edit-sub-category" element={<EditSubCategory />} />
+          <Route path="/edit-sub-category/:id" element={<EditSubCategory />} />
 
           <Route path="/new-order" element={<CourseNewOrders />} />
           

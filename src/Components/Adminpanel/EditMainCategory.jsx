@@ -1,29 +1,87 @@
-import React, { useState } from 'react';
-import editpageimg from '../../Assets/edit-main-category.png'
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import baseurl from '../ApiService/ApiService';
 
 const EditMainCategory = () => {
   const [formData, setFormData] = useState({
-    categoryName: '',
-    image: null,
-    setPopular: false,
-    setHomePageTop: false
+    category_name: ''
   });
+  
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  // Fetch category data on component mount
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        const response = await axios.get(`${baseurl}/api/category/${id}`);
+        setFormData({
+          category_name: response.data.data.category_name
+        });
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching category:', err);
+        setError('Failed to load category data. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategoryData();
+  }, [id]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
-      [name]: type === 'checkbox' ? checked : 
-              type === 'file' ? files[0] : 
-              value
+      [name]: value
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission logic here
+    
+    // Reset status states
+    setError(null);
+    setSuccess(null);
+    setSubmitting(true);
+    
+    try {
+      // Make the API call to update category
+      const response = await axios.put(`${baseurl}/api/category/update/${id}`, {
+        category_name: formData.category_name
+      });
+      
+      setSuccess('Category updated successfully!');
+      
+      // Redirect to category list after short delay
+      setTimeout(() => {
+        navigate('/parent-categories');
+      }, 1000);
+      
+    } catch (err) {
+      console.error('Error updating category:', err);
+      setError(err.response?.data?.message || 'Failed to update category. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4">
@@ -31,89 +89,57 @@ const EditMainCategory = () => {
         <div className="col-12">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
-              <h5 className="card-title mb-4">Add Main Category</h5>
+              <h5 className="card-title mb-4">Edit Category</h5>
+              
+              {/* Show success message */}
+              {success && (
+                <div className="alert alert-success" role="alert">
+                  {success}
+                </div>
+              )}
+              
+              {/* Show error message */}
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {error}
+                </div>
+              )}
               
               <form onSubmit={handleSubmit}>
                 {/* Category Name */}
                 <div className="mb-3">
-                  <label htmlFor="categoryName" className="form-label">
+                  <label htmlFor="category_name" className="form-label">
                     Category Name
                   </label>
                   <input
                     type="text"
-                    className="form-control"
-                    id="categoryName"
-                    name="categoryName"
-                    value={formData.categoryName}
+                    className="form-control w-50"
+                    id="category_name" 
+                    name="category_name"
+                    value={formData.category_name}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
 
-                {/* Image Upload */}
-                <div className="mb-3">
-                  <label htmlFor="image" className="form-label">
-                    Image upload(jpg, png, jpeg)
-                  </label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    id="image"
-                    name="image"
-                    accept=".jpg,.png,.jpeg"
-                    onChange={handleInputChange}
-                  />
+                {/* Buttons */}
+                <div className="mt-4">
+                  <button 
+                    type="submit" 
+                    className="btn btn-success px-4 py-2 me-2"
+                    disabled={submitting}
+                  >
+                    {submitting ? 'Updating...' : 'Update Category'}
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary px-4 py-2"
+                    onClick={() => navigate('/parent-categories')}
+                  >
+                    Cancel
+                  </button>
                 </div>
-
-                {/* Icon Preview */}
-                <div className="mb-4">
-                  <img 
-                    src= {editpageimg}
-                    alt="Category Icon"
-                    className="img-fluid"
-                    style={{ maxWidth: '64px' }}
-                  />
-                </div>
-
-
-
-                {/* Set Popular Checkbox */}
-                <div className="mb-3">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="setPopular"
-                      name="setPopular"
-                      checked={formData.setPopular}
-                      onChange={handleInputChange}
-                    />
-                    <label className="form-check-label" htmlFor="setPopular">
-                      Set Popular
-                    </label>
-                  </div>
-                </div>
-
-                {/* Set Home Page Top Checkbox */}
-                <div className="mb-3">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="setHomePageTop"
-                      name="setHomePageTop"
-                      checked={formData.setHomePageTop}
-                      onChange={handleInputChange}
-                    />
-                    <label className="form-check-label" htmlFor="setHomePageTop">
-                      Set Home Page Top
-                    </label>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <button type="submit" className="btn btn-success">
-                  Submit
-                </button>
               </form>
             </div>
           </div>

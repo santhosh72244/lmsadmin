@@ -235,12 +235,12 @@ const AdminSidebar = ({ isCollapsed }) => {
                 {openMenu === 'categories' && !isCollapsed && (
                   <ul className="nav flex-column">
                     <li className="nav-item">
-                      <Link to="/main-category" className="nav-link sub-menu-link">
-                        Main Category
+                      <Link to="/parent-categories" className="nav-link sub-menu-link">
+                        Parent Category
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/sub-category" className="nav-link sub-menu-link">
+                      <Link to="/sub-categories" className="nav-link sub-menu-link">
                         Sub Category
                       </Link>
                     </li>

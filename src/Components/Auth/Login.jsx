@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Auth.css'
+import './Auth.css';
+import axios from 'axios';
+import baseurl from '../ApiService/ApiService';
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -14,10 +20,38 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login submitted:', formData);
+    setError('');
+    setLoading(true);
+    
+    try {
+      // Call the login API endpoint
+      const response = await axios.post(`${baseurl}/api/admin/login`, formData);
+      
+      // If login is successful
+      if (response.data.success) {
+        // Store the token in localStorage for future requests
+        localStorage.setItem('adminToken', response.data.accessToken);
+        localStorage.setItem('adminData', JSON.stringify(response.data.data));
+        
+        // Redirect to admin dashboard or home page
+        window.location.href = '/dashboard';
+      }
+    } catch (error) {
+      // Handle login failure
+      if (error.response && error.response.data) {
+        setError(error.response.data.msg || 'Login failed. Please try again.');
+      } else {
+        setError('Network error. Please check your connection.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,6 +69,12 @@ const Login = () => {
                 </a>
               </p>
 
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {error}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <input
@@ -48,9 +88,9 @@ const Login = () => {
                   />
                 </div>
 
-                <div className="mb-3">
+                <div className="mb-3 position-relative">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     className="form-control form-control-lg"
                     placeholder="Password"
                     name="password"
@@ -58,6 +98,14 @@ const Login = () => {
                     onChange={handleChange}
                     required
                   />
+                  <button 
+                    type="button" 
+                    className="btn position-absolute end-0 top-50 translate-middle-y bg-transparent border-0" 
+                    onClick={togglePasswordVisibility}
+                    style={{ zIndex: 5 }}
+                  >
+                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                  </button>
                 </div>
 
                 <div className="mb-4 text-end">
@@ -69,8 +117,9 @@ const Login = () => {
                 <button
                   type="submit"
                   className="btn btn-primary w-100 btn-lg mb-4"
+                  disabled={loading}
                 >
-                  Login
+                  {loading ? 'Logging in...' : 'Login'}
                 </button>
               </form>
             </div>
