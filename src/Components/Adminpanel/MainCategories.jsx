@@ -68,7 +68,7 @@ const MainCategories = () => {
             className="btn btn-primary mb-3" 
             onClick={() => navigate('/add-category')}
           >
-            Add Category
+            Add Main Category
           </button>
           
           <div className="input-group mb-3">
